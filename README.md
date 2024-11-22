@@ -18,7 +18,7 @@
 
 ## Features
 
-- Retrieve novel title information, chapters, and images
+- Retrieve novel title information, chapters, and chapter contents
 - Explore the latest, popular, newest, and completed novel per source
 - Dedicated search endpoints for each source for a focused search experience
 
