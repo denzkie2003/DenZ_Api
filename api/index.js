@@ -12,6 +12,10 @@ app.get("/", (req, res) => {
   });
 });
 
+// Example using Node.js/Express
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+
+
 app.use("/novel", novelFireRoutes);
 
 module.exports = app;
