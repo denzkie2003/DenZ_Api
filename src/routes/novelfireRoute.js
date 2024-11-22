@@ -4,15 +4,21 @@ const {
   getNewestNovels,
   getCompletedNovels,
   getRankingNovels,
-  getSearchQuery
+  getSearchQuery,
+  getNovelInfo,
+  getChapters,
+  getChapterContent
 } = require("../fetcher/novelfireFetcher");
 
 const router = express.Router();
 
-router.get("/novelfire/latest/page/:page?", getLatestChapters);
-router.get("/novelfire/newest/page/:page?", getNewestNovels);
-router.get("/novelfire/completed/page/:page?", getCompletedNovels);
-router.get("/novelfire/rank/:type?", getRankingNovels);
-router.get("/novelfire/search/:query?", getSearchQuery);
+router.get("/novelfire/latest", getLatestChapters);
+router.get("/novelfire/newest", getNewestNovels);
+router.get("/novelfire/completed", getCompletedNovels);
+router.get("/novelfire/rank", getRankingNovels);
+router.get("/novelfire/search", getSearchQuery);
+router.get("/novelfire/info", getNovelInfo);
+router.get("/novelfire/chapters", getChapters);
+router.get("/novelfire/read/chapter", getChapterContent);
 
 module.exports = router;

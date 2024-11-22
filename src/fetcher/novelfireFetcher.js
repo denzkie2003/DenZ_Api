@@ -3,101 +3,229 @@ const {
   scrapeNewestNovels,
   scrapeCompletedNovels,
   scrapeRankingNovels,
-  scrapeSearchResults
+  scrapeSearchResults,
+  scrapeNovelInfo,
+  scrapeChapters,
+  scrapeChapterContent
 } = require("../scrapper/novelfireScrapper");
 
 const getLatestChapters = async (req, res) => {
-  const page = req.params.page || 1;
+  const page = req.query.page || 1;
   try{
     const data = await scrapeLatestChapters(page);
-    res.send(data);
-  }catch(err){
-    res.status(500).send({
-      success: false,
-      message: "Failed to fetch novel data from NovelFire.",
-    });
-  }
-}
-
-const getNewestNovels = async (req, res) => {
-  const page = req.params.page || 1;
-  try{
-    const data = await scrapeNewestNovels(page);
-    res.send(data);
-  }catch(err){
-    res.status(500).send({
-      success: false,
-      message: "Failed to fetch novel data from NovelFire.",
-    });
-  }
-}
-
-const getCompletedNovels = async (req, res) => {
-  const page = req.params.page || 1;
-  try{
-    const data = await scrapeCompletedNovels(page);
-    res.send(data);
-  }catch(err){
-    res.status(500).send({
-      success: false,
-      message: "Failed to fetch novel data from NovelFire.",
-    });
-  }
-}
-
-/*const getRankingNovels = async (req, res) => {
-  const { type = "daily" } = req.params;
-  
-  try{
-    if (!["daily-rank", "monthly-rank", "alltime-rank", "hot-rank", "rating-rank", "mostlib-rank"].includes(type)) {
+    if(data){
+      return res.status(200).send({
+        success: true,
+        data: data,
+      });
+    }else{
       return res.status(400).send({
         success: false,
-        message: "Invalid type. Please use 'daily-rank', 'monthly-rank', 'alltime-rank', 'hot-rank', 'rating-rank', 'mostlib-rank'.",
+        message: "Data not found!",
       });
     }
-    
-    const data = await scrapeCompletedNovels(type);
-    res.send(data);
   }catch(err){
-    res.status(500).send({
+    return res.status(500).send({
       success: false,
       message: "Failed to fetch novel data from NovelFire.",
     });
   }
-}*/
+};
+
+const getNewestNovels = async (req, res) => {
+  const page = req.query.page || 1;
+  try{
+    const data = await scrapeNewestNovels(page);
+    if(data){
+      return res.status(200).send({
+        success: true,
+        data: data,
+      });
+    }else{
+      return res.status(400).send({
+        success: false,
+        message: "Data not found!",
+      });
+    }
+  }catch(err){
+    return res.status(500).send({
+      success: false,
+      message: "Failed to fetch novel data from NovelFire.",
+    });
+  }
+};
+
+const getCompletedNovels = async (req, res) => {
+  const page = req.query.page || 1;
+  try{
+    const data = await scrapeCompletedNovels(page);
+    if(data){
+      return res.status(200).send({
+        success: true,
+        data: data,
+      });
+    }else{
+      return res.status(400).send({
+        success: false,
+        message: "Data not found!",
+      });
+    }
+  }catch(err){
+    return res.status(500).send({
+      success: false,
+      message: "Failed to fetch novel data from NovelFire.",
+    });
+  }
+};
 
 const getRankingNovels = async (req, res) => {
-  const type = req.params.type || "daily-rank";
+  const type = req.query.type || "daily-rank";
   
   try{
     const data = await scrapeRankingNovels(type);
-    res.send(data);
+    if(data){
+      return res.status(200).send({
+        success: true,
+        data: data,
+      });
+    }else{
+      return res.status(400).send({
+        success: false,
+        message: "Data not found!",
+      });
+    }
   }catch(err){
-    res.status(500).send({
+    return res.status(500).send({
       success: false,
       message: "Failed to fetch novel data from NovelFire.",
     });
   }
-}
+};
 
 const getSearchQuery = async (req, res) => {
-  const query = req.params.query || "shadow";
+  const query = req.query.query || "shadow";
   
   try{
     const data = await scrapeSearchResults(query);
-    res.send(data);
+    if(data){
+      return res.status(200).send({
+        success: true,
+        data: data,
+      });
+    }else{
+      return res.status(400).send({
+        success: false,
+        message: "No result found!",
+      });
+    }
   }catch(err){
-    res.status(500).send({
+    console.log("Failed to fetch novel data from NovelFire.");
+    return res.status(500).send({
       success: false,
       message: "Failed to fetch novel data from NovelFire.",
     });
   }
-}
+};
+
+const getNovelInfo = async (req, res) => {
+  const id = req.query.novelId;
+  if(!id || id.trim() === ""){
+    return res.status(400).send({
+      success: false,
+      message: "Failed to fetch novel. Novel ID is required!",
+    });
+  }
+  try{
+    const data = await scrapeNovelInfo(id);
+    if(data){
+      return res.status(200).send({
+        success: true,
+        data: data,
+      });
+    }else{
+      return res.status(400).send({
+        success: false,
+        message: "Novel not found!",
+      });
+    }
+  }catch(err){
+    console.log("Failed to fetch novel data from NovelFire.");
+    return res.status(500).send({
+      success: false,
+      message: "Failed to fetch novel data from NovelFire.",
+    });
+  }
+};
+
+const getChapters = async (req, res) => {
+  const id = req.query.novelId;
+  const page = req.query.page || 1;
+  
+  try{
+    const data = await scrapeChapters(id,page);
+    if(data){
+      return res.status(200).send({
+        success: true,
+        data: data,
+      });
+    }else{
+      return res.status(400).send({
+        success: false,
+        message: "Chapters not found!",
+      });
+    }
+  }catch(err){
+    console.log("Failed to fetch chapters data from NovelFire.");
+    return res.status(500).send({
+      success: false,
+      message: "Failed to fetch novel data from NovelFire.",
+    });
+  }
+};
+
+const getChapterContent = async (req, res) => {
+  const chapterId = req.query.chapterId;
+
+  // Check if chapterId is missing or empty
+  if (!chapterId || chapterId.trim() === "") {
+    return res.status(400).send({
+      success: false,
+      message: "Failed to fetch chapter content. Chapter ID is required!",
+    });
+  }
+
+  try {
+    const data = await scrapeChapterContent(chapterId);
+
+    // Check if data was successfully retrieved
+    if (data) {
+      return res.status(200).send({
+        success: true,
+        data: data, // Assuming data is an array or an object
+      });
+    } else {
+      return res.status(404).send({
+        success: false,
+        message: "Chapter content not found.",
+      });
+    }
+  } catch (err) {
+    console.error("Error fetching chapter content:", err);
+    return res.status(500).send({
+      success: false,
+      message: "Failed to fetch chapter content due to a server error.",
+    });
+  }
+};
+
 
 module.exports = {
   getLatestChapters,
   getNewestNovels,
   getCompletedNovels,
   getRankingNovels,
-  getSearchQuery
-}
+  getSearchQuery,
+  getNovelInfo,
+  getChapters,
+  getChapterContent
+};

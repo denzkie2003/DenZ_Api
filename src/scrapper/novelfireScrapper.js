@@ -10,7 +10,7 @@ const HEADERS = {
 const scrapeLatestChapters = async (page = 1) => {
   const url = baseUrl + "latest-release-novels?page=" + page;
   try{
-    const { data } = await axios.get(url, { header: HEADERS });
+    const { data } = await axios.get(url);
     const $ = cheerio.load(data);
     const novels = [];
     
@@ -31,12 +31,12 @@ const scrapeLatestChapters = async (page = 1) => {
     console.log("Error fetching latest updates " + error.message);
     throw new Error(error.message);
   }
-}
+};
 
 const scrapeNewestNovels = async (page = 1) => {
   const url = baseUrl + "genre-all/sort-new/status-all/all-novel?page=" + page;
   try{
-    const { data } = await axios.get(url, { header: HEADERS });
+    const { data } = await axios.get(url);
     const $ = cheerio.load(data);
     const novels = [];
     
@@ -54,12 +54,12 @@ const scrapeNewestNovels = async (page = 1) => {
     console.log("Error fetching newest added novels " + error.message);
     throw new Error(error.message);
   }
-}
+};
 
 const scrapeCompletedNovels = async (page = 1) => {
   const url = baseUrl + "genre-all/sort-new/status-completed/all-novel?page=" + page;
   try{
-    const { data } = await axios.get(url, { header: HEADERS });
+    const { data } = await axios.get(url);
     const $ = cheerio.load(data);
     const novels = [];
     
@@ -77,10 +77,10 @@ const scrapeCompletedNovels = async (page = 1) => {
     console.log("Error fetching newest added novels " + error.message);
     throw new Error(error.message);
   }
-}
+};
 
 const scrapeRankingNovels = async (type) => {
-  const url = `${baseUrl}${type}`
+  const url = `${baseUrl}${type}`;
   try{
     const { data } = await axios.get(url);
     const $ = cheerio.load(data);
@@ -131,7 +131,7 @@ const scrapeRankingNovels = async (type) => {
     console.log("Error fetching newest added novels " + error.message);
     throw new Error(error.message);
   }
-}
+};
 
 const scrapeSearchResults = async (query) => {
   const url = `${baseUrl}ajax/searchLive`;
@@ -164,6 +164,95 @@ const scrapeSearchResults = async (query) => {
     console.log("Error fetching query " + error.message);
     throw new Error(error.message);
   }
+};
+
+const scrapeNovelInfo = async (novelId) => {
+  const url = baseUrl + "book/" + novelId;
+  
+  try{
+    const { data } = await axios.get(url);
+    const $ = cheerio.load(data);
+    const novels = [];
+    
+    const info = $(".novel-info");
+    const id = novelId;
+    const title = info.find("h1.novel-title").text().trim() || "";
+    const poster = $(".cover img").attr("data-src") || "";
+    const author = $(".author a span").text().trim() || "";
+    const rating = $(".my-rating").attr("data-rating") || "";
+    const totalChapter = $(".header-stats strong").eq(0).text().trim() || "";
+    const views = $(".header-stats strong").eq(1).text().trim() || "";
+    const bookmark = $(".header-stats strong").eq(2).text().trim() || "";
+    const status = $(".header-stats strong").eq(3).text().trim() || "";
+    const description = $(".description").text().trim() || "";
+    const summary = $(".summary .inner").html() || "";
+    const genres = [];
+    $(".categories ul li").each((i, element) => {
+      const genre = $(element).find("a").text().trim();
+      genres.push(genre);
+    });
+    novels.push({
+      id,
+      title,
+      poster,
+      author,
+      rating,
+      totalChapter,
+      views,
+      bookmark,
+      status,
+      description,
+      summary,
+      genres
+    });
+    return novels;
+  }catch(error){
+    console.log("Error fetching novel detais " + error.message);
+    throw new Error(error.message);
+  }
+}
+
+const scrapeChapters = async (novelId, page = 1) => {
+  const url = `${baseUrl}book/${novelId}/chapters?page=${page}`;
+  
+  try{
+    const { data } = await axios.get(url);
+    const $ = cheerio.load(data);
+    const chapters = [];
+    
+    $(".chapter-list li").each((i, element) => {
+      const chapterId = $(element).find("a").attr("href").replace("https://novelfire.net/book/","") || "";
+      const chapterTitle = $(element).find("a strong").text().trim() || "";
+      chapters.push({
+        chapterId,
+        chapterTitle
+      });
+    });
+    return chapters;
+  }catch(error){
+    console.log("Error fetching novel chapters " + error.message);
+    throw new Error(error.message);
+  }
+}
+
+const scrapeChapterContent = async (chapterId) => {
+  const url = baseUrl + "book/" + chapterId;
+  
+  try{
+    const { data } = await axios.get(url);
+    const $ = cheerio.load(data);
+    const novelContents = [];
+    
+    const chapterTitle = $("span.chapter-title").text().trim() || "";
+    const previousChapter = $("a.prevchap").attr("href").replace("https://novelfire.docsachhay.net/book/","") || "";
+    const nextChapter = $("a.nextchap").attr("href").replace("https://novelfire.docsachhay.net/book/","") || "";
+    const content = $("#chapter-container #content").html() || "";
+    novelContents.push({ chapterTitle, previousChapter, nextChapter, content });
+    return novelContents;
+  }catch(error){
+    console.log("Error fetching novel chapters content" + error.message);
+    throw new Error(error.message);
+  }
 }
 
 module.exports = {
@@ -171,5 +260,8 @@ module.exports = {
   scrapeNewestNovels,
   scrapeCompletedNovels,
   scrapeRankingNovels,
-  scrapeSearchResults
+  scrapeSearchResults,
+  scrapeNovelInfo,
+  scrapeChapters,
+  scrapeChapterContent
 }
