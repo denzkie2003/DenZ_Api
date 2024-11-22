@@ -1,5 +1,5 @@
 const express = require("express");
-const novelFireRoutes = require("./src/routes/novelfireRoute");
+const novelFireRoutes = require("../src/routes/novelfireRoute");
 const app = express();
 const port = 3000;
 
