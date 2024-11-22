@@ -1,0 +1,25 @@
+{
+  "name": "denz_api",
+  "version": "1.0.0",
+  "description": "DenZ_Api uses Node.js to scrape data information from various Novel sites",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/denzkie2003/DenZ_Api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/denzkie2003/DenZ_Api/issues"
+  },
+  "homepage": "https://github.com/denzkie2003/DenZ_Api#readme",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node app.js"
+  },
+  "author": "DenZ",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "cheerio": "^1.0.0",
+    "express": "^4.21.1"
+  }
+}
