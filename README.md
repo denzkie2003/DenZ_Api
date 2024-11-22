@@ -50,6 +50,7 @@ Search each source independently with the following endpoints:
 | Endpoint                               | Description                                    |
 | -------------------------------------- | ---------------------------------------------- |
 | **`GET /novel/novelfire/info?novelId={novelId}`**       | Fetches details of a specific novel by ID.     |
+| **`GET /novel/novelfire/chapters?novelId={novelId}`** | Retrieves list of chapters for a specific novel. |
 | **`GET /novel/novelfire/read/chapter?chapterId={chapterId}`** | Retrieves chapter content for a specific novel chapter. |
 | **`GET /nove/novelfire/latest?page={page}`**     | Lists the latest novel titles (paginated) (default = 1}.     |
 | **`GET /novel/novelfire/newest?page={page}`**    | Lists newest novel titles (paginated) (default = 1).        |
