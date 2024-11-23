@@ -1,5 +1,6 @@
 const express = require("express");
 const novelFireRoutes = require("./src/routes/novelfireRoute");
+const novelBuddyRoutes = require("./src/routes/novelbuddyRoute");
 const app = express();
 const port = 3000;
 
@@ -13,6 +14,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/novel", novelFireRoutes);
+app.use("/novel", novelBuddyRoutes);
 
 app.listen(port, () => {
   console.log(`App listening on http://localhost:${port}`);

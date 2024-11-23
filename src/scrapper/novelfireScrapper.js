@@ -27,7 +27,7 @@ const scrapeLatestChapters = async (page = 1) => {
       const chapter = itemBody.find("h5.chapter-title").text().trim() || "";
       const chapterId = itemBody.eq(1).attr("href").replace("https://novelfire.net/book/","");
 
-      novels.push({ id, poster, title, chapter, chapterId });
+      novels.push({ id, poster, title, chapter, chapterId, });
     });
     return novels;
   }catch(error){
@@ -48,7 +48,7 @@ const scrapeNewestNovels = async (page = 1) => {
       const poster = $(element).find("img").attr("data-src") || "";
       const title = $(element).find("h4").text().trim() || "";
 
-      novels.push({ id, poster, title });
+      novels.push({ id, poster, title, });
     });
     return novels;
   }catch(error){
@@ -69,7 +69,7 @@ const scrapeCompletedNovels = async (page = 1) => {
       const poster = $(element).find("img").attr("data-src") || "";
       const title = $(element).find("h4").text().trim() || "";
 
-      novels.push({ id, poster, title });
+      novels.push({ id, poster, title, });
     });
     return novels;
   }catch(error){
@@ -96,11 +96,7 @@ const scrapeRankingNovels = async (type) => {
       const title = $(element).find(".title a").text().trim() || "";
 
       // Extract views
-      const viewsText = $(element)
-        .find(".numberOf")
-        .text()
-        .trim()
-        .match(/(\d+(,\d+)*)/); // Extract numeric value
+      const viewsText = $(element).find(".numberOf").text().trim().match(/(\d+(,\d+)*)/); // Extract numeric value
       const views = viewsText ? viewsText[0].replace(/,/g, "") : "0";
 
       // Extract status (e.g., Ongoing, Completed)
@@ -150,7 +146,7 @@ const scrapeSearchResults = async (query) => {
       results.push({
         id,
         title,
-        poster
+        poster,
       });
     });
 
@@ -197,7 +193,7 @@ const scrapeNovelInfo = async (novelId) => {
       status,
       description,
       summary,
-      genres
+      genres,
     });
     return novels;
   }catch(error){
@@ -218,7 +214,7 @@ const scrapeChapters = async (novelId, page = 1) => {
       const chapterTitle = $(element).find("a strong").text().trim() || "";
       chapters.push({
         chapterId,
-        chapterTitle
+        chapterTitle,
       });
     });
     return chapters;
@@ -239,7 +235,7 @@ const scrapeChapterContent = async (chapterId) => {
     const previousChapter = $("a.prevchap").attr("href").replace("https://novelfire.docsachhay.net/book/","") || "";
     const nextChapter = $("a.nextchap").attr("href").replace("https://novelfire.docsachhay.net/book/","") || "";
     const content = $("#chapter-container #content").html() || "";
-    novelContents.push({ chapterTitle, previousChapter, nextChapter, content });
+    novelContents.push({ chapterTitle, previousChapter, nextChapter, content, });
     return novelContents;
   }catch(error){
     throw new Error(error.message);
