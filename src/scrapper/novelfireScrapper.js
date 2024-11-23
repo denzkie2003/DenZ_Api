@@ -4,7 +4,7 @@ const cheerio = require("cheerio");
 const baseUrl = "https://novelfire.net/";
 const HEADERS = {
   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
-  'Referer': 'https://novelfire.net/',
+  'Referrer': 'https://novelfire.net/',
   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
   'Accept-Encoding': 'gzip, deflate, br',
   'Accept-Language': 'en-US,en;q=0.5',
@@ -14,7 +14,7 @@ const HEADERS = {
 const scrapeLatestChapters = async (page = 1) => {
   const url = baseUrl + "latest-release-novels?page=" + page;
   try{
-    const { data } = await axios.get(url, { headers: HEADERS });
+    const { data } = await axios.get(url, { headers: HEADERS, referrer: `baseUrl` });
     const $ = cheerio.load(data);
     const novels = [];
     
@@ -27,7 +27,7 @@ const scrapeLatestChapters = async (page = 1) => {
       const chapter = itemBody.find("h5.chapter-title").text().trim() || "";
       const chapterId = itemBody.eq(1).attr("href").replace("https://novelfire.net/book/","");
 
-      novels.push({ id, poster, title, chapter, chapterId });
+      novels.push({ id, poster, title, chapter, chapterId, });
     });
     return novels;
   }catch(error){
@@ -38,7 +38,7 @@ const scrapeLatestChapters = async (page = 1) => {
 const scrapeNewestNovels = async (page = 1) => {
   const url = baseUrl + "genre-all/sort-new/status-all/all-novel?page=" + page;
   try{
-    const { data } = await axios.get(url, { headers: HEADERS });
+    const { data } = await axios.get(url, { headers: HEADERS, referrer: `baseUrl` });
     const $ = cheerio.load(data);
     const novels = [];
     
@@ -48,7 +48,7 @@ const scrapeNewestNovels = async (page = 1) => {
       const poster = $(element).find("img").attr("data-src") || "";
       const title = $(element).find("h4").text().trim() || "";
 
-      novels.push({ id, poster, title });
+      novels.push({ id, poster, title, });
     });
     return novels;
   }catch(error){
@@ -59,7 +59,7 @@ const scrapeNewestNovels = async (page = 1) => {
 const scrapeCompletedNovels = async (page = 1) => {
   const url = baseUrl + "genre-all/sort-new/status-completed/all-novel?page=" + page;
   try{
-    const { data } = await axios.get(url, { headers: HEADERS });
+    const { data } = await axios.get(url, { headers: HEADERS, referrer: `baseUrl` });
     const $ = cheerio.load(data);
     const novels = [];
     
@@ -69,7 +69,7 @@ const scrapeCompletedNovels = async (page = 1) => {
       const poster = $(element).find("img").attr("data-src") || "";
       const title = $(element).find("h4").text().trim() || "";
 
-      novels.push({ id, poster, title });
+      novels.push({ id, poster, title, });
     });
     return novels;
   }catch(error){
@@ -80,7 +80,7 @@ const scrapeCompletedNovels = async (page = 1) => {
 const scrapeRankingNovels = async (type) => {
   const url = `${baseUrl}${type}`;
   try{
-    const { data } = await axios.get(url, { headers: HEADERS });
+    const { data } = await axios.get(url, { headers: HEADERS, referrer: `baseUrl` });
     const $ = cheerio.load(data);
     const novels = [];
     
@@ -96,11 +96,7 @@ const scrapeRankingNovels = async (type) => {
       const title = $(element).find(".title a").text().trim() || "";
 
       // Extract views
-      const viewsText = $(element)
-        .find(".numberOf")
-        .text()
-        .trim()
-        .match(/(\d+(,\d+)*)/); // Extract numeric value
+      const viewsText = $(element).find(".numberOf").text().trim().match(/(\d+(,\d+)*)/); // Extract numeric value
       const views = viewsText ? viewsText[0].replace(/,/g, "") : "0";
 
       // Extract status (e.g., Ongoing, Completed)
@@ -134,8 +130,7 @@ const scrapeSearchResults = async (query) => {
   
   try{
     const { data } = await axios.get(url, {
-      params: { inputContent: query }, headers: HEADERS
-    });
+      params: { inputContent: query }, headers: HEADERS, referrer: `baseUrl` });
 
     // Load the response HTML into cheerio
     const $ = cheerio.load(data.html);
@@ -151,7 +146,7 @@ const scrapeSearchResults = async (query) => {
       results.push({
         id,
         title,
-        poster
+        poster,
       });
     });
 
@@ -165,7 +160,7 @@ const scrapeNovelInfo = async (novelId) => {
   const url = baseUrl + "book/" + novelId;
   
   try{
-    const { data } = await axios.get(url, { headers: HEADERS });
+    const { data } = await axios.get(url, { headers: HEADERS, referrer: `baseUrl` });
     const $ = cheerio.load(data);
     const novels = [];
     
@@ -198,7 +193,7 @@ const scrapeNovelInfo = async (novelId) => {
       status,
       description,
       summary,
-      genres
+      genres,
     });
     return novels;
   }catch(error){
@@ -210,7 +205,7 @@ const scrapeChapters = async (novelId, page = 1) => {
   const url = `${baseUrl}book/${novelId}/chapters?page=${page}`;
   
   try{
-    const { data } = await axios.get(url, { headers: HEADERS });
+    const { data } = await axios.get(url, { headers: HEADERS, referrer: `baseUrl` });
     const $ = cheerio.load(data);
     const chapters = [];
     
@@ -219,7 +214,7 @@ const scrapeChapters = async (novelId, page = 1) => {
       const chapterTitle = $(element).find("a strong").text().trim() || "";
       chapters.push({
         chapterId,
-        chapterTitle
+        chapterTitle,
       });
     });
     return chapters;
@@ -232,7 +227,7 @@ const scrapeChapterContent = async (chapterId) => {
   const url = baseUrl + "book/" + chapterId;
   
   try{
-    const { data } = await axios.get(url, { headers: HEADERS });
+    const { data } = await axios.get(url, { headers: HEADERS, referrer: `baseUrl` });
     const $ = cheerio.load(data);
     const novelContents = [];
     
@@ -240,7 +235,7 @@ const scrapeChapterContent = async (chapterId) => {
     const previousChapter = $("a.prevchap").attr("href").replace("https://novelfire.docsachhay.net/book/","") || "";
     const nextChapter = $("a.nextchap").attr("href").replace("https://novelfire.docsachhay.net/book/","") || "";
     const content = $("#chapter-container #content").html() || "";
-    novelContents.push({ chapterTitle, previousChapter, nextChapter, content });
+    novelContents.push({ chapterTitle, previousChapter, nextChapter, content, });
     return novelContents;
   }catch(error){
     throw new Error(error.message);
