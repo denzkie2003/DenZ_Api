@@ -1,5 +1,6 @@
 const express = require("express");
-const novelFireRoutes = require("../src/routes/novelfireRoute");
+const novelFireRoutes = require("./src/routes/novelfireRoute");
+const novelBuddyRoutes = require("./src/routes/novelbuddyRoute");
 const app = express();
 const port = 3000;
 
@@ -17,5 +18,6 @@ app.get('/favicon.ico', (req, res) => res.status(204).end());
 
 
 app.use("/novel", novelFireRoutes);
+app.use("/novel", novelBuddyRoutes);
 
 module.exports = app;
