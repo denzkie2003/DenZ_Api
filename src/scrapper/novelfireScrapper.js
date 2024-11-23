@@ -4,7 +4,7 @@ const cheerio = require("cheerio");
 const baseUrl = "https://novelfire.net/";
 const HEADERS = {
   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
-  'Referer': 'https://novelfire.net/',
+  'Referrer': 'https://novelfire.net/',
   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
   'Accept-Encoding': 'gzip, deflate, br',
   'Accept-Language': 'en-US,en;q=0.5',
@@ -14,7 +14,7 @@ const HEADERS = {
 const scrapeLatestChapters = async (page = 1) => {
   const url = baseUrl + "latest-release-novels?page=" + page;
   try{
-    const { data } = await axios.get(url, { headers: HEADERS });
+    const { data } = await axios.get(url, { headers: HEADERS, referrer: `baseUrl` });
     const $ = cheerio.load(data);
     const novels = [];
     
@@ -38,7 +38,7 @@ const scrapeLatestChapters = async (page = 1) => {
 const scrapeNewestNovels = async (page = 1) => {
   const url = baseUrl + "genre-all/sort-new/status-all/all-novel?page=" + page;
   try{
-    const { data } = await axios.get(url, { headers: HEADERS });
+    const { data } = await axios.get(url, { headers: HEADERS, referrer: `baseUrl` });
     const $ = cheerio.load(data);
     const novels = [];
     
@@ -59,7 +59,7 @@ const scrapeNewestNovels = async (page = 1) => {
 const scrapeCompletedNovels = async (page = 1) => {
   const url = baseUrl + "genre-all/sort-new/status-completed/all-novel?page=" + page;
   try{
-    const { data } = await axios.get(url, { headers: HEADERS });
+    const { data } = await axios.get(url, { headers: HEADERS, referrer: `baseUrl` });
     const $ = cheerio.load(data);
     const novels = [];
     
@@ -80,7 +80,7 @@ const scrapeCompletedNovels = async (page = 1) => {
 const scrapeRankingNovels = async (type) => {
   const url = `${baseUrl}${type}`;
   try{
-    const { data } = await axios.get(url, { headers: HEADERS });
+    const { data } = await axios.get(url, { headers: HEADERS, referrer: `baseUrl` });
     const $ = cheerio.load(data);
     const novels = [];
     
@@ -134,8 +134,7 @@ const scrapeSearchResults = async (query) => {
   
   try{
     const { data } = await axios.get(url, {
-      params: { inputContent: query }, headers: HEADERS
-    });
+      params: { inputContent: query }, headers: HEADERS, referrer: `baseUrl` });
 
     // Load the response HTML into cheerio
     const $ = cheerio.load(data.html);
@@ -165,7 +164,7 @@ const scrapeNovelInfo = async (novelId) => {
   const url = baseUrl + "book/" + novelId;
   
   try{
-    const { data } = await axios.get(url, { headers: HEADERS });
+    const { data } = await axios.get(url, { headers: HEADERS, referrer: `baseUrl` });
     const $ = cheerio.load(data);
     const novels = [];
     
@@ -210,7 +209,7 @@ const scrapeChapters = async (novelId, page = 1) => {
   const url = `${baseUrl}book/${novelId}/chapters?page=${page}`;
   
   try{
-    const { data } = await axios.get(url, { headers: HEADERS });
+    const { data } = await axios.get(url, { headers: HEADERS, referrer: `baseUrl` });
     const $ = cheerio.load(data);
     const chapters = [];
     
@@ -232,7 +231,7 @@ const scrapeChapterContent = async (chapterId) => {
   const url = baseUrl + "book/" + chapterId;
   
   try{
-    const { data } = await axios.get(url, { headers: HEADERS });
+    const { data } = await axios.get(url, { headers: HEADERS, referrer: `baseUrl` });
     const $ = cheerio.load(data);
     const novelContents = [];
     
