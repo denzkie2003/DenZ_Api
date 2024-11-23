@@ -9,7 +9,7 @@ const {
   scrapeChapterContent
 } = require("../scrapper/novelfireScrapper");
 
-const getLatestChapters = async (req, res) => {
+async function getLatestChapters(req, res){
   const page = req.query.page || 1;
   try{
     const data = await scrapeLatestChapters(page);
@@ -30,9 +30,9 @@ const getLatestChapters = async (req, res) => {
       message: "Failed to fetch novel data from NovelFire.",
     });
   }
-};
+}
 
-const getNewestNovels = async (req, res) => {
+async function getNewestNovels(req, res){
   const page = req.query.page || 1;
   try{
     const data = await scrapeNewestNovels(page);
@@ -53,9 +53,9 @@ const getNewestNovels = async (req, res) => {
       message: "Failed to fetch novel data from NovelFire.",
     });
   }
-};
+}
 
-const getCompletedNovels = async (req, res) => {
+async function getCompletedNovels(req, res){
   const page = req.query.page || 1;
   try{
     const data = await scrapeCompletedNovels(page);
@@ -76,11 +76,10 @@ const getCompletedNovels = async (req, res) => {
       message: "Failed to fetch novel data from NovelFire.",
     });
   }
-};
+}
 
-const getRankingNovels = async (req, res) => {
+async function getRankingNovels(req, res){
   const type = req.query.type || "daily-rank";
-  
   try{
     const data = await scrapeRankingNovels(type);
     if(data){
@@ -100,11 +99,10 @@ const getRankingNovels = async (req, res) => {
       message: "Failed to fetch novel data from NovelFire.",
     });
   }
-};
+}
 
-const getSearchQuery = async (req, res) => {
+async function getSearchQuery(req, res){
   const query = req.query.query || "shadow";
-  
   try{
     const data = await scrapeSearchResults(query);
     if(data){
@@ -125,9 +123,9 @@ const getSearchQuery = async (req, res) => {
       message: "Failed to fetch novel data from NovelFire.",
     });
   }
-};
+}
 
-const getNovelInfo = async (req, res) => {
+async function getNovelInfo(req, res){
   const id = req.query.novelId;
   if(!id || id.trim() === ""){
     return res.status(400).send({
@@ -155,12 +153,11 @@ const getNovelInfo = async (req, res) => {
       message: "Failed to fetch novel data from NovelFire.",
     });
   }
-};
+}
 
-const getChapters = async (req, res) => {
+async function getChapters(req, res){
   const id = req.query.novelId;
   const page = req.query.page || 1;
-  
   try{
     const data = await scrapeChapters(id,page);
     if(data){
@@ -181,11 +178,10 @@ const getChapters = async (req, res) => {
       message: "Failed to fetch novel data from NovelFire.",
     });
   }
-};
+}
 
-const getChapterContent = async (req, res) => {
+async function getChapterContent(req, res){
   const chapterId = req.query.chapterId;
-
   // Check if chapterId is missing or empty
   if (!chapterId || chapterId.trim() === "") {
     return res.status(400).send({
@@ -193,7 +189,6 @@ const getChapterContent = async (req, res) => {
       message: "Failed to fetch chapter content. Chapter ID is required!",
     });
   }
-
   try {
     const data = await scrapeChapterContent(chapterId);
 
@@ -216,7 +211,7 @@ const getChapterContent = async (req, res) => {
       message: "Failed to fetch chapter content due to a server error.",
     });
   }
-};
+}
 
 
 module.exports = {
