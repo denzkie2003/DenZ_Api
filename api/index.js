@@ -1,6 +1,6 @@
 const express = require("express");
-const novelFireRoutes = require("./src/routes/novelfireRoute");
-const novelBuddyRoutes = require("./src/routes/novelbuddyRoute");
+const novelFireRoutes = require("../src/routes/novelfireRoute");
+const novelBuddyRoutes = require("../src/routes/novelbuddyRoute");
 const app = express();
 const port = 3000;
 
